@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_auth/presentation/pages/bulletinBoard/bulletin_bord_controller.dart';
+import 'package:google_auth/presentation/pages/bulletinBoard/bulletin_bord_create_page.dart';
 import 'package:google_auth/presentation/pages/comment/comments_page.dart';
 
 class BulletinBordPage extends StatelessWidget {
@@ -13,9 +14,15 @@ class BulletinBordPage extends StatelessWidget {
         title: Text('게시판'),
         actions: [
           IconButton(
+            icon: Icon(Icons.create),
+            onPressed: () {
+              Get.to(() => BulletinBordCreatePage());
+            },
+          ),
+          IconButton(
             icon: Icon(Icons.logout),
             onPressed: () {
-              bulletinBordController.googleAuthController.signOut();
+                bulletinBordController.googleAuthController.signOut();
             },
           ),
         ],
@@ -52,35 +59,6 @@ class BulletinBordPage extends StatelessWidget {
                 separatorBuilder: (BuildContext context, int index) => const Divider(),
               );
             }),
-          ),
-          Padding( /// 게시판 작성
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      TextField(
-                        controller: bulletinBordController.titleController,
-                        decoration: InputDecoration(
-                          labelText: '제목',
-                        ),
-                      ),
-                      TextField(
-                        controller: bulletinBordController.contentsController,
-                        decoration: InputDecoration(
-                          labelText: '내용',
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.send),
-                  onPressed: bulletinBordController.addBulletinBord,
-                ),
-              ],
-            ),
           ),
         ],
       ),

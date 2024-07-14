@@ -40,7 +40,7 @@ class BulletinBordController extends GetxController {
     });
   }
 
-  void addBulletinBord() {
+  void addBulletinBord()  {
     db.collection('bulletinBoard').add({
       'title': titleController.text,
       'content': contentsController.text,
