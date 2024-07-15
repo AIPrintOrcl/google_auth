@@ -1,36 +1,34 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:google_auth/presentation/pages/bulletinBoard/bulletin_bord_controller.dart';
 import 'package:google_auth/presentation/pages/login/google_auth_controller.dart';
 
 
 class CommentsController extends GetxController {
   final TextEditingController textEditingController = TextEditingController();
   final googleAuthController = GoogleAuthController.instance;
+  final bulletinBordController = Get.put(BulletinBordController());
 
   final String bourd_id;
 
   CommentsController(this.bourd_id);
 
+  Rx<Map<String, dynamic>?> board = Rx<Map<String, dynamic>?>(null);
+
+
   @override
   void onInit() {
     super.onInit();
-    getBulletinBoard();
+    board = bulletinBordController.getBulletinBoard(bourd_id);
     getComments();
   }
 
   // DB 관련
-  Rx<Map<String, dynamic>?> board = Rx<Map<String, dynamic>?>(null);
   RxList<CommentModel> _commentsModels = RxList<CommentModel>([]);
   List<CommentModel> get commentsModels => _commentsModels;
   //cloud firestore
   final FirebaseFirestore db = FirebaseFirestore.instance;
-
-  void getBulletinBoard() {
-    db.collection('bulletinBoard').doc(bourd_id).snapshots().listen((snapshot) {
-      board.value = snapshot.data();
-    });
-  }
 
   getComments() {
     db.collection('bulletinBoard').doc(bourd_id).collection('comments').snapshots().listen((snapshot) {

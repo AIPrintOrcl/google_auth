@@ -31,28 +31,29 @@ class BulletinBordPage extends StatelessWidget {
         children: [
           Expanded(
             child: Obx(() {
-              if (bulletinBordController.bulletinBordModels.isEmpty) { /* 게시물이 빈 값일 경우 */
+              if (bulletinBordController.bulletinBordList.isEmpty) { /* 게시물이 빈 값일 경우 */
                 return Center(child: CircularProgressIndicator());
               }
               return ListView.separated(
                 padding: EdgeInsets.zero,
-                itemCount: bulletinBordController.bulletinBordModels.length,
+                itemCount: bulletinBordController.bulletinBordList.length,
                 itemBuilder: (BuildContext context, int index) {
-                  var bourd = bulletinBordController.bulletinBordModels[index];
+                  var board = bulletinBordController.bulletinBordList[index];
                   return ListTile(
-                    title: Text(bourd.title),
-                    subtitle: Text(bourd.author),
+                    title: Text(board.title),
+                    subtitle: Text(board.author),
                     /// 작성자만 삭제 기능 표시
                     trailing: bulletinBordController.googleAuthController.getUser!.email ==
-                        bourd.author ? IconButton(
+                        board.author ?
+                    IconButton(
                       icon: Icon(Icons.delete),
                       onPressed: () {
-                        deleteAlert(context, bourd.id);
+                        deleteAlert(context, board.id);
                       },
                     ) : Text(''),
                     onTap: () {Get.to(() => CommentsPage(
-                      bourd_id: bourd.id,
-                      title: bourd.title,
+                      board_id: board.id,
+                      title: board.title,
                     ));},
                   );
                 },

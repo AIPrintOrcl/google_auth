@@ -27,5 +27,3 @@ plugins {
 
 include ':app'
 include ':google_sign_in_android'
-
-project(':google_sign_in_android').projectDir = new File('C:/Users/Administrator/AppData/Local/Pub/Cache/hosted/pub.dev/google_sign_in_android-6.1.27/android')
