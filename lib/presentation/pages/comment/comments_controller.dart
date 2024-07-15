@@ -25,14 +25,14 @@ class CommentsController extends GetxController {
   }
 
   // DB 관련
-  RxList<CommentModel> _commentsModels = RxList<CommentModel>([]);
-  List<CommentModel> get commentsModels => _commentsModels;
+  RxList<CommentModel> _commentsList = RxList<CommentModel>([]);
+  List<CommentModel> get commentsList => _commentsList;
   //cloud firestore
   final FirebaseFirestore db = FirebaseFirestore.instance;
 
   getComments() {
     db.collection('bulletinBoard').doc(bourd_id).collection('comments').snapshots().listen((snapshot) {
-      _commentsModels.value = snapshot.docs.map((doc) {
+      _commentsList.value = snapshot.docs.map((doc) {
         return CommentModel(
           id: doc.id,
           content: doc['content'],
@@ -55,7 +55,7 @@ class CommentsController extends GetxController {
   }
 
   void deleteComment(String id) async {
-    var documentReference = db.collection('bulletinBoard').doc(id);
+    var documentReference = db.collection('bulletinBoard').doc(bourd_id).collection('comments').doc(id);
     await documentReference.delete().whenComplete(() {
     }).onError((error, stackTrace) {
       print(error.toString());

@@ -51,10 +51,19 @@ class BulletinBordPage extends StatelessWidget {
                         deleteAlert(context, board.id);
                       },
                     ) : Text(''),
-                    onTap: () {Get.to(() => CommentsPage(
+                    onTap: () {
+                      Get.to(() => CommentsPage(
+                        board_id: board.id,
+                        title: board.title,
+                      ),
+                          arguments: true, /* 전달할 인자 설정 */
+                          duration: const Duration(milliseconds: 500) /* 페이지 전환 지연 시간 설정 500 = 0.5초 */
+                      );
+                    }
+                    /*{Get.to(() => CommentsPage(
                       board_id: board.id,
                       title: board.title,
-                    ));},
+                    ));}*/,
                   );
                 },
                 separatorBuilder: (BuildContext context, int index) => const Divider(),

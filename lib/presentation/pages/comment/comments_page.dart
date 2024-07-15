@@ -51,7 +51,11 @@ class CommentsPage extends StatelessWidget {
                           ),
                           IconButton(
                             onPressed: () {
-                              deleteAlert(context, board_id);
+                              deleteAlert(
+                                  context,
+                                  board_id,
+                                  'board'
+                              );
                             },
                             icon: Icon(Icons.delete),
                           ),
@@ -79,10 +83,22 @@ class CommentsPage extends StatelessWidget {
                       ),
                       SizedBox(height: 8),
                       // 댓글 리스트
-                      ...commentsController.commentsModels.map((comment) {
+                      ...commentsController.commentsList.map((comment) {
                         return ListTile(
                           title: Text(comment.content),
                           subtitle: Text('작성자: ${comment.author}'),
+                          trailing: commentsController.googleAuthController.getUser!.email ==
+                              comment.author ?
+                          IconButton(
+                            icon: Icon(Icons.delete),
+                            onPressed: () {
+                              deleteAlert(
+                                  context,
+                                  comment.id,
+                                  "comment"
+                              );
+                            },
+                          ) : Text(''),
                         );
                       }).toList(),
                     ],
@@ -115,7 +131,7 @@ class CommentsPage extends StatelessWidget {
     );
   }
   // 수정 확인창
-  Future<void> deleteAlert(BuildContext context, String id) async {
+  Future<void> deleteAlert(BuildContext context, String id, String mod) async {
     return showDialog<void>(
       //다이얼로그 위젯 소환
       context: context,
@@ -135,9 +151,17 @@ class CommentsPage extends StatelessWidget {
             TextButton(
               child: Text('예'),
               onPressed: () {
-                bulletinBordController.deleteBulletinBord(board_id);
+                if(mod == "board") {
+                  bulletinBordController.deleteBulletinBord(id);
+                  Get.off(() => BulletinBordPage(), /* Get.off : 페이지 이동, 이동 효과 및 지연 시간 설정 */
+                      arguments: true, /* 전달할 인자 설정 */
+                      transition: Transition.fadeIn, /* transition : 페이지 전환 효과 설정, fadeIn : 부드럽게 */
+                      duration: const Duration(milliseconds: 500) /* 페이지 전환 지연 시간 설정 500 = 0.5초 */
+                  );
+                } else if(mod == "comment") {
+                  commentsController.deleteComment(id);
+                };
                 Navigator.of(context).pop();
-                Get.to(BulletinBordPage());
               },
             ),
             TextButton(

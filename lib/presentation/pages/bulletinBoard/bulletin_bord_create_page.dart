@@ -15,6 +15,9 @@ class BulletinBordCreatePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bulletinBordController.titleController.clear();
+    bulletinBordController.contentsController.clear();
+
     if (board_id != null && bulletinBordController.board.value == null) { /* 게시물 번호는 있지만 게시물이 빈 값일 경우 */
       return Center(child: CircularProgressIndicator());
     }
@@ -117,7 +120,11 @@ class BulletinBordCreatePage extends StatelessWidget {
                   );
                 }
                 Navigator.of(context).pop();
-                Get.to(() => BulletinBordPage());
+                Get.off(() => BulletinBordPage(), /* Get.off : 페이지 이동, 이동 효과 및 지연 시간 설정 */
+                    arguments: true, /* 전달할 인자 설정 */
+                    transition: Transition.fadeIn, /* transition : 페이지 전환 효과 설정, fadeIn : 부드럽게 */
+                    duration: const Duration(milliseconds: 500) /* 페이지 전환 지연 시간 설정 500 = 0.5초 */
+                );
               },
             ),
             TextButton(
