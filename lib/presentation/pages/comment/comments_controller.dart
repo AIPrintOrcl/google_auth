@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:google_auth/presentation/pages/bulletinBoard/bulletin_bord_controller.dart';
 import 'package:google_auth/presentation/pages/login/google_auth_controller.dart';
+import 'package:google_auth/utils/getx_controller.dart';
 
 
 class CommentsController extends GetxController {
@@ -23,7 +24,30 @@ class CommentsController extends GetxController {
     board = bulletinBordController.getBulletinBoard(bourd_id);
     getComments();
   }
+  
+  RxString _msgComment = ''.obs;
+  get getMsgComment => _msgComment;
+  bool commentPass = false;
 
+  // 입력한 제목 확인
+  checkComment() {
+    String msg="";
+    if(textEditingController.text.length < 2) {
+      _msgComment.value = "댓글 2글자 이상은 작성해주세요.";
+      commentPass = false;
+      return;
+    }
+    if(textEditingController.text.length > 100) {
+      _msgComment.value = "제목은 100글자를 넘을 수 없습니다.";
+      commentPass = false;
+      return;
+    }
+
+    _msgComment.value = "";
+    commentPass = true;
+    return;
+  }
+  
   // DB 관련
   RxList<CommentModel> _commentsList = RxList<CommentModel>([]);
   List<CommentModel> get commentsList => _commentsList;
@@ -35,7 +59,7 @@ class CommentsController extends GetxController {
       _commentsList.value = snapshot.docs.map((doc) {
         return CommentModel(
           id: doc.id,
-          content: doc['content'],
+          comment: doc['comment'],
           author: doc['author'],
           like_count: doc['like_count'],
           create_date: doc['create_date'],
@@ -46,8 +70,8 @@ class CommentsController extends GetxController {
 
   void addComment() {
     db.collection('bulletinBoard').doc(bourd_id).collection('comments').add({
-      'content': textEditingController.text,
-      'author': googleAuthController.getUser!.email,
+      'comment': textEditingController.text,
+      'author': getx.getUser.email,
       'like_count': 0,
       'create_date': FieldValue.serverTimestamp(),
     });
@@ -64,8 +88,8 @@ class CommentsController extends GetxController {
 
   // void updateComment(String id, data) async {
   //   db.collection('bulletinBoard').doc(bourd_id).update(data)({
-  //     'title': titleController.text,
-  //     'content': contentsController.text,
+  //     'Comment': CommentController.text,
+  //     'Comment': CommentsController.text,
   //     'author': googleAuthController.getUser!.email,
   //     'like_count': 0,
   //     'create_date': FieldValue.serverTimestamp(),
@@ -77,14 +101,14 @@ class CommentsController extends GetxController {
 class CommentModel {
   CommentModel( /* 생성자 */
       { required this.id,
-        required this.content,
+        required this.comment,
         required this.author,
         required this.like_count,
         required this.create_date
       });
 
   String id;
-  String content;
+  String comment;
   String author;
   num like_count;
   Timestamp create_date;
@@ -92,7 +116,7 @@ class CommentModel {
   factory CommentModel.fromJson(Map<String, dynamic> json) => CommentModel( /* json => 데이터로 변환 */
     id: json["id"],
     author: json["author"],
-    content: json["content"],
+    comment: json["comment"],
     like_count: json["like_count"],
     create_date: json["create_date"],
   );
@@ -100,7 +124,7 @@ class CommentModel {
   Map<String, dynamic> toJson() => { /* 데이터 => json로 변환 */
     "id": id,
     "author": author,
-    "content": content,
+    "comment": comment,
     "like_count": like_count,
     "create_date": create_date
   };

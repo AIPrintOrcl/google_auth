@@ -33,7 +33,7 @@ dependencies:
 
   get: null
   slide_countdown: null
-  firebase_core: ^2.2.0
+  firebase_core: ^2.32.0
   firebase_auth: ^4.20.0
   firebase_storage: ^11.0.7
   cloud_firestore: ^4.2.0

@@ -3,26 +3,46 @@ import 'package:get/get.dart';
 import 'package:google_auth/presentation/pages/bulletinBoard/bulletin_bord_controller.dart';
 import 'package:google_auth/presentation/pages/bulletinBoard/bulletin_bord_create_page.dart';
 import 'package:google_auth/presentation/pages/comment/comments_page.dart';
+import 'package:google_auth/presentation/pages/login/auth_controller.dart';
+import 'package:google_auth/presentation/pages/login/google_auth_controller.dart';
+import 'package:google_auth/utils/getx_controller.dart';
 
 class BulletinBordPage extends StatelessWidget {
   final bulletinBordController = Get.put(BulletinBordController());
+  final googleAuthController = GoogleAuthController.instance;
 
   @override
   Widget build(BuildContext context) {
+    final googleController = bulletinBordController.googleAuthController;
+    final authController = Get.put(AuthController());
+
     return Scaffold(
       appBar: AppBar(
         title: Text('게시판'),
         actions: [
           IconButton(
-            icon: Icon(Icons.create),
+            icon: Icon(Icons.add),
             onPressed: () {
+              // 확인 메시지를 위한 세팅
+              bulletinBordController.checkTitle();
+              bulletinBordController.checkContent();
+
               Get.to(() => BulletinBordCreatePage());
             },
           ),
           IconButton(
             icon: Icon(Icons.logout),
             onPressed: () {
-                bulletinBordController.googleAuthController.signOut();
+              authController.logOut();
+              googleController.signOut();
+              // if(googleController.getGoogleSignIn.signIn() != null){
+              //   googleController.signOut();
+              //   return;
+              // }
+              // if(authController.getUser != null){
+              //   authController.logOut();
+              //   return;
+              // }
             },
           ),
         ],
@@ -36,6 +56,7 @@ class BulletinBordPage extends StatelessWidget {
               }
               return ListView.separated(
                 padding: EdgeInsets.zero,
+                controller: ScrollController(),
                 itemCount: bulletinBordController.bulletinBordList.length,
                 itemBuilder: (BuildContext context, int index) {
                   var board = bulletinBordController.bulletinBordList[index];
@@ -43,7 +64,7 @@ class BulletinBordPage extends StatelessWidget {
                     title: Text(board.title),
                     subtitle: Text(board.author),
                     /// 작성자만 삭제 기능 표시
-                    trailing: bulletinBordController.googleAuthController.getUser!.email ==
+                    trailing: getx.getUser.email ==
                         board.author ?
                     IconButton(
                       icon: Icon(Icons.delete),

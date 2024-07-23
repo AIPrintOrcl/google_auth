@@ -11,7 +11,52 @@ class BulletinBordController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    getBulletinBordList();
+    getBulletinBordList(); /* 게시판 리스트 세팅 */
+  }
+
+  RxString _msgTitle = ''.obs;
+  get getMsgTitle => _msgTitle;
+  bool titlePass = false;
+  RxString _msgContent = ''.obs;
+  get getMsgContent => _msgContent;
+  bool contentPass = false;
+
+  // 입력한 제목 확인
+  checkTitle() {
+    String msg="";
+    if(titleController.text.length < 5) {
+      _msgTitle.value = "제목 5글자 이상은 작성해주세요.";
+      titlePass = false;
+      return;
+    }
+    if(titleController.text.length > 30) {
+      _msgTitle.value = "제목은 30글자를 넘을 수 없습니다.";
+      titlePass = false;
+      return;
+    }
+
+    _msgTitle.value = "";
+    titlePass = true;
+    return;
+  }
+
+  // 입력한 내용 확인
+  checkContent() {
+    String msg="";
+    if(contentsController.text.length < 9) {
+      _msgContent.value = "내용 10글자 이상은 작성해주세요.";
+      contentPass = false;
+      return;
+    }
+    if(contentsController.text.length > 500) {
+      _msgContent.value = "내용은 500글자를 넘을 수 없습니다.";
+      contentPass = false;
+      return;
+    }
+
+    _msgContent.value = "";
+    contentPass = true;
+    return;
   }
 
   // DB 관련
@@ -38,6 +83,7 @@ class BulletinBordController extends GetxController {
 
   Rx<Map<String, dynamic>?> board = Rx<Map<String, dynamic>?>(null);
 
+  // 게시판 본문 내용
   Rx<Map<String, dynamic>?> getBulletinBoard(String board_id) {
     db.collection('bulletinBoard').doc(board_id).snapshots().listen((snapshot) {
       board.value = snapshot.data();
@@ -45,6 +91,7 @@ class BulletinBordController extends GetxController {
     return board;
   }
 
+  // 게시판 수정 시 제목, 내용을 필드 값에 세팅
   setTextField(String board_id){
     if(board_id !=null) {
       board = getBulletinBoard(board_id);
@@ -52,15 +99,19 @@ class BulletinBordController extends GetxController {
       titleController.text = '${board.value!['title']}';
       contentsController.text = '${board.value!['content']}';
     }
-
+    // 확인 메시지를 위한 세팅
+    checkTitle();
+    checkContent();
   }
 
+  // 게시판 생성 후 제목, 내용 필드 값 클리어
   void addBulletinBord(data) async  {
     await db.collection('bulletinBoard').add(data);
     titleController.clear();
     contentsController.clear();
   }
 
+  // 게시판 삭제
   void deleteBulletinBord(String board_id) async {
     var documentReference = db.collection('bulletinBoard').doc(board_id);
     await documentReference.delete().whenComplete(() {
@@ -69,6 +120,7 @@ class BulletinBordController extends GetxController {
     });
   }
 
+  // 게시판 수정
   void updateBulletinBord(String board_id, data) async {
     var documentReference = db.collection('bulletinBoard').doc(board_id);
     await documentReference.update(data).whenComplete(() {
@@ -79,10 +131,8 @@ class BulletinBordController extends GetxController {
 
 }
 
-// Model
+// 게시판 Model
 class BulletinBordModel {
-  final googleAuthController = GoogleAuthController.instance;
-
   BulletinBordModel( /* 생성자 */
       {required this.id,
         required this.title,

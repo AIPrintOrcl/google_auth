@@ -4,6 +4,7 @@ import 'package:google_auth/presentation/pages/bulletinBoard/bulletin_bord_contr
 import 'package:google_auth/presentation/pages/bulletinBoard/bulletin_bord_create_page.dart';
 import 'package:google_auth/presentation/pages/bulletinBoard/bulletin_bord_page.dart';
 import 'package:google_auth/presentation/pages/comment/comments_controller.dart';
+import 'package:google_auth/utils/getx_controller.dart';
 
 class CommentsPage extends StatelessWidget {
   final String board_id;
@@ -37,7 +38,7 @@ class CommentsPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // 게시판 본문
-                      commentsController.googleAuthController.getUser!.email == board['author'] ?
+                      getx.getUser.email == board['author'] ?
                       Row(
                         children: [
                           IconButton(
@@ -85,9 +86,9 @@ class CommentsPage extends StatelessWidget {
                       // 댓글 리스트
                       ...commentsController.commentsList.map((comment) {
                         return ListTile(
-                          title: Text(comment.content),
+                          title: Text(comment.comment),
                           subtitle: Text('작성자: ${comment.author}'),
-                          trailing: commentsController.googleAuthController.getUser!.email ==
+                          trailing: getx.getUser.email ==
                               comment.author ?
                           IconButton(
                             icon: Icon(Icons.delete),

@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:google_auth/presentation/pages/bulletinBoard/bulletin_bord_page.dart';
+import 'package:google_auth/utils/getx_controller.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:google_auth/presentation/pages/main_page.dart';
-import 'package:google_auth/presentation/pages/login/login_page.dart';
 
 class GoogleAuthController extends GetxController {
   static GoogleAuthController instance = Get.find();
@@ -12,7 +12,6 @@ class GoogleAuthController extends GetxController {
   GoogleSignIn _googleSignIn = GoogleSignIn(); /* 로그인 여부 */
 
   late Rx<User?> _user; /* 사용자 정보 */
-  User? get getUser => _user.value;
 
   @override
   void onReady() {
@@ -40,11 +39,13 @@ class GoogleAuthController extends GetxController {
       idToken: googleAuth.idToken,
     );
     await auth.signInWithCredential(credential);
+    getx.setUser(_user.value);
   }
 
   void signOut() async {
-    await _googleSignIn.disconnect(); /* 구글 인증 연결 끊기 */
+      await _googleSignIn.disconnect(); /* 구글 인증 연결 끊기 */
     await auth.signOut(); /* 로그아웃 */
+      getx.setUser(null);
   }
 
 }

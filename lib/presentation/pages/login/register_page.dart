@@ -9,7 +9,7 @@ class RegisterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Register'),
+        title: Text('회원가입'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -18,11 +18,11 @@ class RegisterPage extends StatelessWidget {
           children: [
             TextField(
               controller: emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+              decoration: InputDecoration(labelText: '이메일'),
             ),
             TextField(
               controller: passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
+              decoration: InputDecoration(labelText: '비밀번호'),
               obscureText: true,
             ),
             SizedBox(height: 20),
@@ -31,7 +31,7 @@ class RegisterPage extends StatelessWidget {
                 AuthController.instance
                     .register(emailController.text.trim(), passwordController.text.trim());
               },
-              child: Text('Register'),
+              child: Text('가입하기'),
             ),
           ],
         ),

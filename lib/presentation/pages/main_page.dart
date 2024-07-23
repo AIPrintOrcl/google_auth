@@ -33,29 +33,8 @@ class MainPage extends StatelessWidget {
         ),
       );
 
-/*  Future<void> initPlugin(BuildContext context) async {
-    final TrackingStatus status = await AppTrackingTransparency.trackingAuthorizationStatus; *//* 현재 추적 상태 확인 *//*
-    if (status == TrackingStatus.notDetermined) { *//* notDetermined : 사용자가 아직 승인 요청 대화 상자를 받지 못한 상태일 경우. *//*
-      // 사용자 정의 추적 대화 상자 표시
-      await showCustomTrackingDialog(context);
-      await Future.delayed(const Duration(milliseconds: 200));
-      // 추적 승인 요청
-      final TrackingStatus status = await AppTrackingTransparency.requestTrackingAuthorization(); *//* requestTrackingAuthorization : 시스템 대화 상자를 통해 사용자의 추적 승인 요청 *//*
-    }
-
-    // 사용자의 광고 식별자를 uuid애 저장
-    final uuid = await AppTrackingTransparency.getAdvertisingIdentifier();
-    print("UUID: $uuid");
-  }*/
-
   @override
   Widget build(BuildContext context) {
-    /*
-    /// IOS일 경우 첫 번째 프레임 화면에 그려진 후 특정 초기화 작업 수행.
-    if (Platform.isIOS) {
-      WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((_) => initPlugin(context));
-    }
-    */
     final mainPageController = Get.put(MainPageController());
     return Scaffold(
       body: Obx(
@@ -86,17 +65,6 @@ class MainPage extends StatelessWidget {
                       children: [
                         // 시작하기 버튼
                         TextButton(
-                          /*buttonText: 'start'.tr,
-                          width: 179,
-                          buttonBorderColor: HexColor('#555D42'),
-                          buttonColor: HexColor('#DAEAD4'),
-                          isBoxShadow: true,
-                          style: TextStyle(
-                            fontFamily: 'ONE_Mobile_POP_OTF',
-                            color: HexColor('#555D42'),
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),*/
                           child: Text("시작하기"),
                           onPressed: () {
                             Get.off(() => LoginPage(),

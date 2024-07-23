@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_auth/presentation/pages/bulletinBoard/bulletin_bord_controller.dart';
 import 'package:google_auth/presentation/pages/bulletinBoard/bulletin_bord_page.dart';
+import 'package:google_auth/utils/getx_controller.dart';
 
 class BulletinBordCreatePage extends StatelessWidget {
   final String? board_id;
@@ -46,11 +47,21 @@ class BulletinBordCreatePage extends StatelessWidget {
                   Expanded(
                     child: Column(
                       children: [
+                        Obx(() => Text(
+                          bulletinBordController.getMsgTitle.value,
+                        )),
+                        Obx(() => Text(
+                          bulletinBordController.getMsgContent.value,
+                        )),
                         TextField(
                           controller: bulletinBordController.titleController,
                           decoration: InputDecoration(
                             labelText: '제목',
                           ),
+                          onChanged: (Text) {
+                            // 제목 검증
+                            bulletinBordController.checkTitle();
+                          },
                         ),
                         Expanded(
                           child: TextField(
@@ -60,6 +71,10 @@ class BulletinBordCreatePage extends StatelessWidget {
                             decoration: InputDecoration(
                               labelText: '내용',
                             ),
+                            onChanged: (Text) {
+                              // 내용 검증
+                              bulletinBordController.checkContent();
+                            },
                           ),
                         ),
                       ],
@@ -99,11 +114,19 @@ class BulletinBordCreatePage extends StatelessWidget {
             TextButton(
               child: Text('예'),
               onPressed: () {
+
+                // 게시판 작성 조건에 만족하지 않을 경우
+                if(!bulletinBordController.titlePass || !bulletinBordController.contentPass) {
+
+                  Navigator.of(context).pop();
+                  return;
+                }
+
                 if(mod=='C'){
                   bulletinBordController.addBulletinBord({
                     'title': bulletinBordController.titleController.text,
                     'content': bulletinBordController.contentsController.text,
-                    'author': bulletinBordController.googleAuthController.getUser!.email,
+                    'author': getx.getUser.email,
                     'like_count': 0,
                     'update_date': FieldValue.serverTimestamp(),
                     'create_date': FieldValue.serverTimestamp(),
@@ -114,7 +137,7 @@ class BulletinBordCreatePage extends StatelessWidget {
                     {
                       'title': bulletinBordController.titleController.text,
                       'content': bulletinBordController.contentsController.text,
-                      'author': bulletinBordController.googleAuthController.getUser!.email,
+                      'author': getx.getUser.email,
                       'update_date': FieldValue.serverTimestamp(),
                     },
                   );

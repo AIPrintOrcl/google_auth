@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_auth/presentation/pages/bulletinBoard/bulletin_bord_page.dart';
 import 'package:google_auth/presentation/pages/login/login_page.dart';
+import 'package:google_auth/utils/getx_controller.dart';
 
 class AuthController extends GetxController {
   static AuthController instance = Get.find();
   late Rx<User?> _user;
+
   FirebaseAuth auth = FirebaseAuth.instance;
 
   @override
@@ -28,6 +30,7 @@ class AuthController extends GetxController {
   void register(String email, password) async {
     try {
       await auth.createUserWithEmailAndPassword(email: email, password: password);
+      getx.setUser(_user.value);
     } catch (e) {
       Get.snackbar("About User", "User message",
           backgroundColor: Colors.redAccent,
@@ -36,16 +39,15 @@ class AuthController extends GetxController {
             "회원가입에 실패했습니다.",
             style: TextStyle(color: Colors.white),
           ),
-          messageText: Text(
-            e.toString(),
-            style: TextStyle(color: Colors.white),
-          ));
+      );
+      print(e); /* 에러 상세 메시지를 print에 출력 */
     }
   }
 
   void login(String email, password) async {
     try {
       await auth.signInWithEmailAndPassword(email: email, password: password);
+      getx.setUser(_user.value);
     } catch (e) {
       Get.snackbar("About Login", "Login message",
           backgroundColor: Colors.redAccent,
@@ -54,14 +56,13 @@ class AuthController extends GetxController {
             "로그인에 실패했습니다.",
             style: TextStyle(color: Colors.white),
           ),
-          messageText: Text(
-            e.toString(),
-            style: TextStyle(color: Colors.white),
-          ));
+      );
+      print(e); /* 에러 상세 메시지를 print에 출력 */
     }
   }
 
   void logOut() async {
     await auth.signOut();
+    getx.setUser(null);
   }
 }
