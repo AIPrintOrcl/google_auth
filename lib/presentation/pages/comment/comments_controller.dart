@@ -62,7 +62,7 @@ class CommentsController extends GetxController {
           comment: doc['comment'],
           author: doc['author'],
           like_count: doc['like_count'],
-          create_date: doc['create_date'],
+          create_date: doc['create_date'] == null ? '' : doc['create_date'],
         );
       }).toList();
     });

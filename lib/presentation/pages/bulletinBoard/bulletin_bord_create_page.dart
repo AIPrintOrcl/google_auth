@@ -114,10 +114,9 @@ class BulletinBordCreatePage extends StatelessWidget {
             TextButton(
               child: Text('예'),
               onPressed: () {
-
                 // 게시판 작성 조건에 만족하지 않을 경우
                 if(!bulletinBordController.titlePass || !bulletinBordController.contentPass) {
-
+                  checkMsgAlert(context, bulletinBordController.getMsgTitle.toString(), bulletinBordController.getMsgContent.toString());
                   Navigator.of(context).pop();
                   return;
                 }
@@ -161,4 +160,34 @@ class BulletinBordCreatePage extends StatelessWidget {
       },
     );
   }
+
+  Future<void> checkMsgAlert(BuildContext context, String msgTitle, String msgContent) {
+    return showDialog<void>(
+      //다이얼로그 위젯 소환
+      context: context,
+      barrierDismissible: false, // 다이얼로그 이외의 바탕 눌러도 안꺼지도록 설정
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('게시글 등록하지 못했습니다.'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              //List Body를 기준으로 Text 설정
+              children: <Widget>[
+                Text('$msgTitle' + '\n' + '$msgContent'),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              child: Text('확인'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
 }
